@@ -110,25 +110,8 @@ def cmd_ls(cwd: Directory, expected_directories: list[str], expected_files: list
             pass
         cwd.add_file(file_name, file_size)
 
-def __get_root_dir(dir):
-    root = dir if dir.parent is None else __get_root_dir(dir.parent)
-    return root
 
-def cmd_cd(cwd: Directory, dir_name: str) -> Directory:
-    '''searches for dir_name in current working directory and returns it if there is any, returns parent directory if dir_name = .. or root directory if dir_name = /'''
-    if(dir_name == '..'): # get parent directory
-        if cwd.parent is None:
-            return cwd
-        return cwd.parent
-    
-    if(dir_name == '/'): # get root directory
-        return __get_root_dir(cwd)
 
-    for dir in cwd.directories: # get child directory
-        if dir.name == dir_name:
-            return dir
-        
-    raise IndexError("no directory found with name {0 in directory {1}".format(dir_name, cwd))
 
 if __name__ == '__main__':
     # module testing, gets ignored when imported as module: docstring overloading on type-checked Directory.add_directory(...)
