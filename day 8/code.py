@@ -15,7 +15,7 @@ for str_in in open("data.txt", "rt"):
     result = str_in[:-1]
     data_list.append(result)
 
-forest = [] # type: list[list[Tree]] 2d list of trees
+forest = [] # list[list[Tree]] | None 2d list of trees
 
 def populate_forest(data: list[str]) -> list[list[Tree]]:
     # make a list of characters, for each character create a Tree
