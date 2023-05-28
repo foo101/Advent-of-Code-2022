@@ -36,8 +36,6 @@ class Location:
         self.parent: 'Location' = None
 
     def __repr__(self):
-        if self.visited:
-            return '░'
         if self == Location.start:
             return 'S'
         if self == Location.end:
@@ -89,19 +87,19 @@ def visit(locations: list[Location]):
         visited_locations.extend(visited)
     return visited_locations
 
-def show_heightmap(heightmap: list[list[Location]]):
+def show_heightmap(heightmap: list[list[Location]], path = []):
     for row in heightmap:
         for loc in row:
-            print(loc, end='')
+            if loc in path:
+                print('░', end='')
+            else:
+                print(loc, end='')
         print()
     
-def get_path(loc: Location) -> int:
-    if loc.parent is None:
-        # print(loc.get_location())
-        return 0
-    else:
-        # print(loc.get_location())
-        return get_path(loc.parent) + 1
+def get_path(loc: Location):
+    while loc is not None:
+        yield loc
+        loc = loc.parent
 
 # create a heightmap from datalist
 heightmap = [[Location(height, x, y) for x, height in enumerate(row)] for y, row in enumerate(data_list)]
@@ -110,8 +108,6 @@ for row in heightmap:
         for loc in row:
             loc.set_neighbours(heightmap)
         print()
-
-print('start:', Location.start.get_location(), 'end:', Location.end.get_location())
 
 # part 1: find distance from start to end
 def part_1():
@@ -124,12 +120,13 @@ def part_1():
             print('no more neighbors found!')
             show_heightmap(heightmap)
             break
-        print('distance from end:', d)
+        # print('distance from end:', d)
         last_visited = visited
         visited = visit(visited)
         d += 1
+    print('start:', Location.start.get_location(), 'end:', Location.end.get_location())
     print(Location.start.get_location(), end = ' ')
-    print('distance to end:', get_path(Location.start))
+    print('distance to end:', d)
 
 #part 2: find the closest location with height 'a' from end
 def part_2():
@@ -142,14 +139,16 @@ def part_2():
             print('no more neighbors found!')
             show_heightmap(heightmap)
             break
-        print('distance from end:', d)
+        # print('distance from end:', d)
         last_visited = visited
         visited = visit(visited)
         d += 1
     found_loc = list(filter(lambda x: x.height == ord('a'), visited))
 
+    print('distance to end:', d)
     for loc in found_loc:
-        print(loc.get_location(), end = ' ')
-        print('distance to end:', get_path(loc))
+        print('start:', loc.get_location(), 'end:', Location.end.get_location())
+        print(loc.get_location(), '->', Location.end.get_location())
+        show_heightmap(heightmap, [*get_path(loc)])
 
 part_2()
